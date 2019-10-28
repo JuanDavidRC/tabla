@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Automoviles</title>
+    </h:head>
+   
+    <h:body>
+         
+        <div style="padding:16px;border:#D0D0D0 1px solid;text-align:center">
+            
+        
+            <h:form id="form">
+                <p:growl id="msg"/>
+              <h:panelGrid id="grid" columns="3" cellpadding="5">
+                <h:outputText value="Nombre "/>
+                <p:inputText id="nombre" value="#{autoMovil.nombre}" required="true"
+                             validatorMessage=" invalido" 
+                             requiredMessage="No puede estar vacio">
+                    <f:validateLength minimum="4" />
+                    <f:validateRegex pattern="[A-Za-z]{2,}" />
+                </p:inputText>
+                <p:message for="nombre" display="icon" />
+
+                <h:outputText value="Marca "/>
+                <p:selectOneMenu  id="marca" value="#{autoMovil.marca}" style="width:125px">
+                    <f:selectItems  value="#{autoMovil.marcas}"/>
+                </p:selectOneMenu>
+              
+                <p:message for="marca" display="icon" />
+                
+                <h:outputText value="Modelo "/>
+                <p:selectOneMenu  id="modelo" value="#{autoMovil.modelo}" style="width:125px">
+                    <f:selectItems  value="#{autoMovil.modeloo}"/>
+                </p:selectOneMenu>
+              
+                <p:message for="modelo" display="icon" />
+             </h:panelGrid>  
+              <p:commandButton value="Agregar" update="@form" actionListener="#{autoMovil.mostrarDatos()}"  process="@form"
+                             ajax="true"  />
+              
+                <p:dataTable rendered="#{not empty autoMovil.datos}" id="Datatabla" 
+                   var="p" widgetVar="buscar" value="#{autoMovil.datos}"  
+                 paginator="true"
+                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                 rowsPerPageTemplate="2,5,10" 
+                 rows="5" 
+                 filteredValue="#{autoMovil.filtros}" editable="true">
+                    <p:ajax event="rowEdit" listener="#{autoMovil.actualizar}" update=":form:msg"/>
+                    <p:ajax event="rowEditCancel" listener="#{autoMovil.cancelar}" update=":form:msg"/>
+                    
+                    <p:column headerText="Nombre " filterBy="#{p.nombre}"  filterMatchMode="contains">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                 <h:outputText value="#{p.nombre}" />
+                            </f:facet>
+                             <f:facet name="input">
+                                 <p:inputText value="#{autoMovil.nombre}"  validatorMessage=" invalido" 
+                                  requiredMessage="No puede estar vacio">
+                                 <f:validateLength minimum="4" />
+                                <f:validateRegex pattern="[A-Za-z]{2,}" />
+                                </p:inputText>
+                            </f:facet>
+                        </p:cellEditor>
+                            
+                           
+                        </p:column>
+
+                    <p:column headerText="Marca" filterBy="#{p.marca}"  filterMatchMode="exact">
+                       
+                        
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{p.marca}" /></f:facet>
+                          <f:facet name="input">
+                              <h:selectOneMenu value="#{p.marca}" style="width:100%">
+                                  <f:selectItems value="#{autoMovil.marcas}" var="man" itemLabel="#{man}" itemValue="#{man}" />
+                             </h:selectOneMenu>
+                            </f:facet>
+                        </p:cellEditor>
+                        </p:column>
+
+                    <p:column headerText="Modelo" filterBy="#{p.modelo}"  filterMatchMode="exact">
+                         
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{p.modelo}" /></f:facet>
+                          <f:facet name="input">
+                              <h:selectOneMenu value="#{p.modelo}" style="width:100%">
+                                  <f:selectItems value="#{autoMovil.modeloo}" var="man" itemLabel="#{man}" itemValue="#{man}" />
+                             </h:selectOneMenu>
+                            </f:facet>
+                        </p:cellEditor>
+                        
+                        </p:column>
+                    <p:column>
+                        <p:rowEditor/>
+                        
+                    </p:column>
+                    
+                    <p:column>
+                        <h:selectBooleanCheckbox value="#{p.seleccion}" />
+                      
+                    </p:column>
+                    
+                </p:dataTable>
+               <p:commandButton value="Eliminar" actionListener="#{autoMovil.eliminar()}"
+                               update="form" icon="ui-icon-trash">
+                  <p:confirm message="¿seguro desea eliminar?" header="Aviso" icon="ui-icon-alert"/>
+              </p:commandButton>
+              <p:confirmDialog global="true">
+                  <p:commandButton value="Si" type="button" icon="ui-icon-check" styleClass="ui-confirmdialog-yes"/>
+                   <p:commandButton value="No" type="button" icon="ui-icon-close" styleClass="ui-confirmdialog-no"/>
+              </p:confirmDialog> 
+
+              
+        </h:form>
+            </div>
+        
+    </h:body>
+       
+</html>
+
